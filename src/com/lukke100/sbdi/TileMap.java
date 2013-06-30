@@ -199,7 +199,7 @@ public abstract class TileMap {
 	 */
 	public Collection<MapEntity> moveAll(boolean willClear){
 		for(Entry<Integer, MapEntity> entry: markedMove.entrySet()){
-			if(entry.getValue().willChangeTile()){
+			if(entry.getValue().changesTile()){
 				transferEntity(entry.getValue());
 				System.out.println("moved");
 			}

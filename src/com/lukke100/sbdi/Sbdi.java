@@ -85,20 +85,17 @@ final public class Sbdi {
 		Input.addKeyTotal(Keyboard.KEY_RIGHT, Keyboard.KEY_LEFT, new Execute() {
 			@Override
 			public void exec() {
-				player.goRight();
 				
 			}
 		}, new Execute() {
 			@Override
 			public void exec() {
-				player.idleX();
 				
 			}
 		}, new Execute() {
 			
 			@Override
 			public void exec() {
-				player.goLeft();
 
 			}
 		});
@@ -107,21 +104,18 @@ final public class Sbdi {
 			
 			@Override
 			public void exec() {
-				player.goUp();
 				
 			}
 		}, new Execute() {
 			
 			@Override
 			public void exec() {
-				player.idleY();
 				
 			}
 		}, new Execute() {
 			
 			@Override
 			public void exec() {
-				player.goDown();
 				
 			}
 		});

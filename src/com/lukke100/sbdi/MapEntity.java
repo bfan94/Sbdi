@@ -30,145 +30,86 @@ public abstract class MapEntity extends Entity {
 		super(xCoord, yCoord);
 		Sbdi.getActiveMap().addEntity(this);
 	}
-	
-	final private boolean canChangeX() {
-		return (getyVelocity() == 0 && isYAlign());
-	}
 
-	final private boolean canChangeY() {
-		return (getxVelocity() == 0 && isXAlign());
-	}
-	
-	final public Direction getDirection() {
-		return dir;
-	}
-
-	final public float getSpeed() {
-		return speed;
-	}
-
-	final public void setSpeed(float speed) {
-		this.speed = speed;
-	}
-	
-	public void idleX() {
-		//TODO: Have this method's effects apply on next move() call.
-		if(isXAlign()){
-			setxVelocity(0);
-		} else if (xTileChanges()) {
-			snapX();
-			setxVelocity(0);
-		}
-	}
-	
-	public void idleY() {
-		//TODO: Same as idleY()
-		if(isYAlign()){
-			setyVelocity(0);
-		} else if (yTileChanges()){
-			snapY();
-			setyVelocity(0);
-		}
-	}
-	
-	public boolean goLeft(){
-		if(canChangeX()){
-			dir = Direction.EAST;
-			setxVelocity(-speed);
-			return true;
-		}
-		return false;
-	}
-	
-	public boolean goRight(){
-		if(canChangeX()){
-			dir = Direction.WEST;
-			setxVelocity(speed);
-			return true;
-		}
-		return false;
-	}
-	
-	public boolean goUp(){
-		if(canChangeY()){
-			dir = Direction.NORTH;
-			setyVelocity(speed);
-			return true;
-		}
-		return false;
-	}
-	
-	public boolean goDown(){
-		if(canChangeY()){
-			dir = Direction.SOUTH;
-			setyVelocity(-speed);
-			return true;
-		}
+	/**
+	 * Specifies if getxTile() and getyTile() change returns on next game tick.
+	 * 
+	 * @return True if get(x/y)Tile() change
+	 */
+	final public boolean changesTile() {
 		return false;
 	}
 
-	final private boolean isCollX() {
-		for (int y = 0; y < getySize(); y++) {
-			if (Sbdi.getActiveMap().getTile((int) (Math.floor(predictX() + (getxVelocity() > 0? getxSize(): 0))), getyTile() + y).isAnyCollision(this)) {
-				return true;
-			}
-		}
+	/**
+	 * Determines if the entity has been called to move explicitly.
+	 * 
+	 * @return True if the entity must move explicitly.
+	 */
+	final private boolean mustExplicitlyMove() {
 		return false;
 	}
 
-	final private boolean isCollY() {
-		for (int x = 0; x < getxSize(); x++) {
-			if (Sbdi.getActiveMap().getTile(getxTile() + x, (int) (Math.floor(predictY() + (getyVelocity() > 0? getxSize(): 0)))).isAnyCollision(this)) {
-				return true;
-			}
-		}
+	/**
+	 * Explicit movement along the X axis.
+	 */
+	final private void explicitXMove() {
+
+	}
+
+	/**
+	 * Explicitly movement along the Y axis.
+	 */
+	final private void explicitYMove() {
+
+	}
+
+	/**
+	 * Determines if the entity must move implicitly, checks tile alignments.
+	 * 
+	 * @return
+	 */
+	final private boolean mustImplicitlyMove() {
 		return false;
 	}
 
-	final public boolean isMoving() {
-		return !(getxVelocity() == 0 && getyVelocity() == 0);
-	}
-	
-	final public boolean willChangeTile() {
-		return xTileChanges() || yTileChanges();
-	}
-	
-	final public boolean xTileChanges(){
-		return Math.floor(predictX()) != getxTile();
-	}
-	
-	final public boolean yTileChanges(){
-		return Math.floor(predictY()) != getyTile();
+	/**
+	 * Implicitly moves along the X axis.
+	 */
+	final private void implicitXMove() {
+
 	}
 
-	@Override
-	public void move() {		
-		if (isCollX()) {
-			snapX();
+	/**
+	 * Implicitly moves along the Y axis.
+	 */
+	final private void implicitYMove() {
+
+	}
+
+	/**
+	 * Move function implementation that accounts for collision, size, and high
+	 * speeds (more than 1 block per tick). Moves explicitly from outside method
+	 * calls and also implicitly (grid snap, etc). If neither movement types
+	 * must be applied, it will remove itself from the "Marked to Move" list of
+	 * the map.
+	 */
+	public void move() {
+		if (mustExplicitlyMove()) {
+			explicitXMove();
+			explicitYMove();
+		} else if (mustImplicitlyMove()) {
+			implicitXMove();
+			implicitYMove();
 		} else {
-			shiftX();
-		}
-		
-		if (isCollY()) {
-			snapY();
-		} else {
-			shiftY();
+			unmarkMove();
 		}
 	}
 
-	final private void snapX() {
-		if (getxVelocity() > 0 && !isXAlign()) {
-			setxCoord(getxTile() + 1);
-		} else if (getxVelocity() < 0) {
-			setxCoord(getxTile());
-		}
+	/**
+	 * Removes itself from the "Marked to Move" list of the map.
+	 */
+	final private void unmarkMove() {
+
 	}
 
-	final private void snapY() {
-		if (getyVelocity() > 0 && !isYAlign()) {
-			setyCoord(getyTile() + 1);
-		} else if (getyVelocity() < 0) {
-			setyCoord(getyTile());
-		}
-	}
 }
